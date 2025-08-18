@@ -1,0 +1,5 @@
+[2025-08-05 15:04:35,774][line:864][INFO] build_posterior_wrapper took 0.001315 seconds
+[2025-08-05 15:04:35,774][line:900][INFO] TPE using 0 trials
+[2025-08-05 15:08:27,276][line:864][INFO] build_posterior_wrapper took 0.005516 seconds
+[2025-08-05 15:08:27,277][line:900][INFO] TPE using 1/1 trials with best loss 0.586805
+[2025-08-05 15:11:59,935][line:311][INFO] Early stop triggered. Stopping iterations as condition is reach.
