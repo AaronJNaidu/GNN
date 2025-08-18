@@ -1,0 +1,100 @@
+[2025-07-30 15:38:42,435][line:864][INFO] build_posterior_wrapper took 0.001842 seconds
+[2025-07-30 15:38:42,435][line:900][INFO] TPE using 0 trials
+[2025-07-30 15:41:01,636][line:864][INFO] build_posterior_wrapper took 0.002154 seconds
+[2025-07-30 15:41:01,636][line:900][INFO] TPE using 1/1 trials with best loss 0.765106
+[2025-07-30 15:43:19,361][line:864][INFO] build_posterior_wrapper took 0.002050 seconds
+[2025-07-30 15:43:19,361][line:900][INFO] TPE using 2/2 trials with best loss 0.765106
+[2025-07-30 15:45:37,658][line:864][INFO] build_posterior_wrapper took 0.002127 seconds
+[2025-07-30 15:45:37,659][line:900][INFO] TPE using 3/3 trials with best loss 0.753244
+[2025-07-30 15:49:24,625][line:864][INFO] build_posterior_wrapper took 0.001852 seconds
+[2025-07-30 15:49:24,626][line:900][INFO] TPE using 4/4 trials with best loss 0.753244
+[2025-07-30 15:53:10,384][line:864][INFO] build_posterior_wrapper took 0.001877 seconds
+[2025-07-30 15:53:10,384][line:900][INFO] TPE using 5/5 trials with best loss 0.723782
+[2025-07-30 15:56:26,762][line:864][INFO] build_posterior_wrapper took 0.001898 seconds
+[2025-07-30 15:56:26,762][line:900][INFO] TPE using 6/6 trials with best loss 0.722957
+[2025-07-30 15:58:43,538][line:864][INFO] build_posterior_wrapper took 0.001883 seconds
+[2025-07-30 15:58:43,538][line:900][INFO] TPE using 7/7 trials with best loss 0.715920
+[2025-07-30 16:01:34,036][line:864][INFO] build_posterior_wrapper took 0.001920 seconds
+[2025-07-30 16:01:34,037][line:900][INFO] TPE using 8/8 trials with best loss 0.715870
+[2025-07-30 16:04:54,706][line:864][INFO] build_posterior_wrapper took 0.001956 seconds
+[2025-07-30 16:04:54,706][line:900][INFO] TPE using 9/9 trials with best loss 0.715870
+[2025-07-30 16:08:43,635][line:864][INFO] build_posterior_wrapper took 0.001952 seconds
+[2025-07-30 16:08:43,636][line:900][INFO] TPE using 10/10 trials with best loss 0.697931
+[2025-07-30 16:12:02,879][line:864][INFO] build_posterior_wrapper took 0.002018 seconds
+[2025-07-30 16:12:02,880][line:900][INFO] TPE using 11/11 trials with best loss 0.693861
+[2025-07-30 16:14:53,236][line:864][INFO] build_posterior_wrapper took 0.001932 seconds
+[2025-07-30 16:14:53,236][line:900][INFO] TPE using 12/12 trials with best loss 0.693861
+[2025-07-30 16:18:41,029][line:864][INFO] build_posterior_wrapper took 0.001872 seconds
+[2025-07-30 16:18:41,030][line:900][INFO] TPE using 13/13 trials with best loss 0.693861
+[2025-07-30 16:21:59,988][line:864][INFO] build_posterior_wrapper took 0.002043 seconds
+[2025-07-30 16:21:59,988][line:900][INFO] TPE using 14/14 trials with best loss 0.688277
+[2025-07-30 16:24:50,701][line:864][INFO] build_posterior_wrapper took 0.001873 seconds
+[2025-07-30 16:24:50,701][line:900][INFO] TPE using 15/15 trials with best loss 0.688277
+[2025-07-30 16:28:11,449][line:864][INFO] build_posterior_wrapper took 0.001976 seconds
+[2025-07-30 16:28:11,449][line:900][INFO] TPE using 16/16 trials with best loss 0.688277
+[2025-07-30 16:31:59,412][line:864][INFO] build_posterior_wrapper took 0.001958 seconds
+[2025-07-30 16:31:59,412][line:900][INFO] TPE using 17/17 trials with best loss 0.688277
+[2025-07-30 16:34:49,549][line:864][INFO] build_posterior_wrapper took 0.001861 seconds
+[2025-07-30 16:34:49,549][line:900][INFO] TPE using 18/18 trials with best loss 0.688277
+[2025-07-30 16:38:39,710][line:864][INFO] build_posterior_wrapper took 0.001971 seconds
+[2025-07-30 16:38:39,710][line:900][INFO] TPE using 19/19 trials with best loss 0.688277
+[2025-07-30 16:40:58,330][line:864][INFO] build_posterior_wrapper took 0.001959 seconds
+[2025-07-30 16:40:58,330][line:900][INFO] TPE using 20/20 trials with best loss 0.688277
+[2025-07-30 16:44:16,878][line:864][INFO] build_posterior_wrapper took 0.001992 seconds
+[2025-07-30 16:44:16,879][line:900][INFO] TPE using 21/21 trials with best loss 0.688277
+[2025-07-30 16:47:36,641][line:864][INFO] build_posterior_wrapper took 0.001974 seconds
+[2025-07-30 16:47:36,642][line:900][INFO] TPE using 22/22 trials with best loss 0.688277
+[2025-07-30 16:50:57,582][line:864][INFO] build_posterior_wrapper took 0.001911 seconds
+[2025-07-30 16:50:57,582][line:900][INFO] TPE using 23/23 trials with best loss 0.688277
+[2025-07-30 16:54:15,823][line:864][INFO] build_posterior_wrapper took 0.001950 seconds
+[2025-07-30 16:54:15,823][line:900][INFO] TPE using 24/24 trials with best loss 0.688277
+[2025-07-30 16:57:34,319][line:864][INFO] build_posterior_wrapper took 0.001893 seconds
+[2025-07-30 16:57:34,320][line:900][INFO] TPE using 25/25 trials with best loss 0.688277
+[2025-07-30 17:00:52,030][line:864][INFO] build_posterior_wrapper took 0.001908 seconds
+[2025-07-30 17:00:52,030][line:900][INFO] TPE using 26/26 trials with best loss 0.688277
+[2025-07-30 17:04:10,446][line:864][INFO] build_posterior_wrapper took 0.001981 seconds
+[2025-07-30 17:04:10,446][line:900][INFO] TPE using 27/27 trials with best loss 0.688277
+[2025-07-30 17:07:30,011][line:864][INFO] build_posterior_wrapper took 0.002054 seconds
+[2025-07-30 17:07:30,011][line:900][INFO] TPE using 28/28 trials with best loss 0.688277
+[2025-07-30 17:10:49,309][line:864][INFO] build_posterior_wrapper took 0.001983 seconds
+[2025-07-30 17:10:49,309][line:900][INFO] TPE using 29/29 trials with best loss 0.688277
+[2025-07-30 17:14:10,031][line:864][INFO] build_posterior_wrapper took 0.001993 seconds
+[2025-07-30 17:14:10,031][line:900][INFO] TPE using 30/30 trials with best loss 0.683330
+[2025-07-30 17:16:28,890][line:864][INFO] build_posterior_wrapper took 0.001881 seconds
+[2025-07-30 17:16:28,890][line:900][INFO] TPE using 31/31 trials with best loss 0.683330
+[2025-07-30 17:19:46,700][line:864][INFO] build_posterior_wrapper took 0.001982 seconds
+[2025-07-30 17:19:46,700][line:900][INFO] TPE using 32/32 trials with best loss 0.682238
+[2025-07-30 17:22:04,708][line:864][INFO] build_posterior_wrapper took 0.001862 seconds
+[2025-07-30 17:22:04,708][line:900][INFO] TPE using 33/33 trials with best loss 0.682238
+[2025-07-30 17:25:23,308][line:864][INFO] build_posterior_wrapper took 0.002031 seconds
+[2025-07-30 17:25:23,308][line:900][INFO] TPE using 34/34 trials with best loss 0.682238
+[2025-07-30 17:28:12,923][line:864][INFO] build_posterior_wrapper took 0.001894 seconds
+[2025-07-30 17:28:12,923][line:900][INFO] TPE using 35/35 trials with best loss 0.682238
+[2025-07-30 17:31:31,931][line:864][INFO] build_posterior_wrapper took 0.002038 seconds
+[2025-07-30 17:31:31,932][line:900][INFO] TPE using 36/36 trials with best loss 0.682238
+[2025-07-30 17:33:49,460][line:864][INFO] build_posterior_wrapper took 0.001871 seconds
+[2025-07-30 17:33:49,460][line:900][INFO] TPE using 37/37 trials with best loss 0.682238
+[2025-07-30 17:37:08,747][line:864][INFO] build_posterior_wrapper took 0.001935 seconds
+[2025-07-30 17:37:08,747][line:900][INFO] TPE using 38/38 trials with best loss 0.682238
+[2025-07-30 17:40:57,015][line:864][INFO] build_posterior_wrapper took 0.002023 seconds
+[2025-07-30 17:40:57,016][line:900][INFO] TPE using 39/39 trials with best loss 0.682238
+[2025-07-30 17:43:46,167][line:864][INFO] build_posterior_wrapper took 0.001931 seconds
+[2025-07-30 17:43:46,167][line:900][INFO] TPE using 40/40 trials with best loss 0.682238
+[2025-07-30 17:47:05,981][line:864][INFO] build_posterior_wrapper took 0.002087 seconds
+[2025-07-30 17:47:05,981][line:900][INFO] TPE using 41/41 trials with best loss 0.682238
+[2025-07-30 17:49:23,870][line:864][INFO] build_posterior_wrapper took 0.001974 seconds
+[2025-07-30 17:49:23,870][line:900][INFO] TPE using 42/42 trials with best loss 0.682238
+[2025-07-30 17:52:41,677][line:864][INFO] build_posterior_wrapper took 0.002022 seconds
+[2025-07-30 17:52:41,677][line:900][INFO] TPE using 43/43 trials with best loss 0.682238
+[2025-07-30 17:56:28,962][line:864][INFO] build_posterior_wrapper took 0.001950 seconds
+[2025-07-30 17:56:28,963][line:900][INFO] TPE using 44/44 trials with best loss 0.682238
+[2025-07-30 17:59:18,558][line:864][INFO] build_posterior_wrapper took 0.001881 seconds
+[2025-07-30 17:59:18,558][line:900][INFO] TPE using 45/45 trials with best loss 0.682238
+[2025-07-30 18:02:38,436][line:864][INFO] build_posterior_wrapper took 0.001950 seconds
+[2025-07-30 18:02:38,436][line:900][INFO] TPE using 46/46 trials with best loss 0.682238
+[2025-07-30 18:05:57,031][line:864][INFO] build_posterior_wrapper took 0.002107 seconds
+[2025-07-30 18:05:57,032][line:900][INFO] TPE using 47/47 trials with best loss 0.682238
+[2025-07-30 18:09:43,584][line:864][INFO] build_posterior_wrapper took 0.001897 seconds
+[2025-07-30 18:09:43,584][line:900][INFO] TPE using 48/48 trials with best loss 0.682238
+[2025-07-30 18:12:00,509][line:864][INFO] build_posterior_wrapper took 0.001916 seconds
+[2025-07-30 18:12:00,510][line:900][INFO] TPE using 49/49 trials with best loss 0.682238
