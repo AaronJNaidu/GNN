@@ -1,0 +1,9 @@
+Running on cholgpu01.cpu.stats.ox.ac.uk
+Starting at Mon 21 Jul 15:08:12 BST 2025
+/data/slurm/spool/job08910/slurm_script: line 15: /vols/teaching/msc-projects/2024-2025/aanaidu/yes/miniconda3/etc/profile.d/conda.sh: No such file or directory
+
+CondaError: Run 'conda init' before 'conda activate'
+
+Torch version: 2.0.1+cu117
+CUDA version: 11.7
+Finished at Mon 21 Jul 15:08:55 BST 2025
