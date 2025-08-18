@@ -1,0 +1,30 @@
+dataset: ESOL
+seed: 0
+atom_in_dim: 37
+bond_in_dim: 13
+ss_node_in_dim: 50
+ss_edge_in_dim: 37
+mol_in_dim: 167
+learning_rate: 0.005
+epoch: 5
+batch_size: 200
+num_neurons: [512]
+input_norm: layer
+drop_rate: 0.2
+hid_dim: 96
+device: cpu
+dist: 0.005
+split_ratio: [0.8, 0.1, 0.1]
+folds: 3
+n_jobs: 10
+resdual: False
+shuffle: False
+attention: True
+step: 4
+agg_op: mean
+mol_FP: ss
+gating_func: Sigmoid
+ScaleBlock: Contextual
+heads: 4
+2.184332736037859+-0.5779323592995268
+1.682721005482675 2.9939748668846704 1.8763023357462316 
