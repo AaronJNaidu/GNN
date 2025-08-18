@@ -1,0 +1,58 @@
+import numpy as np
+import pandas as pd
+from rdkit import Chem
+
+TOXIC_SMARTS = {"Anilines" : "c1ccccc1[NX3]([#1,CX4!R,$(c1ccccc1),$([CX3](=[OX1])[#6]),$([CX3](=[OX1])[OX2][#6]),$([SX4](=[OX1])(=[OX1])[#1,#6])])[#1,CX4!R,$(c1ccccc1),$([CX3](=[OX1])[#6]),$([CX3](=[OX1])[OX2][#6]),$([SX4](=[OX1])(=[OX1])[#1,#6])]",
+                "Hydrazine" : "[#6,#1][NX3H1][NX3H1][#6,#1]",
+                "Nitrobenzenes" :"a[$([NX3](=[OX1])=[OX1]),$([NX3+](=[OX1])[O-])]",
+                "Dibenzazepines" :"N([CX4])([CX4])C1=Nc2ccccc2[NX3H1]c3c1cccc3",
+                "Benzylamines" :"[#1,CX4!R][NX3]([#1,CX4!R])[CH2]c1ccccc1",
+                "Propargyl amines" :" [#1,CX4,$(c1ccccc1)][CX2]#[CX2][NX3]([#1,CX4,$(c1ccccc1)])[#1,CX4,$(c1ccccc1)]",
+                "Cyclopropyl amines" :"[CX4]1[CX4][CX4]1[NX3]([#1,CX4,$(c1ccccc1)])[#1,CX4,$(c1ccccc1)]",
+                "N-Substituted-4-aryl-1,2,3,6-tetrahydropyridines" :"[NX3]1([CX4!R])[CX4][CX3]=[CX3](c2c([#1,#6,F,Cl,Br,I])c([#1,#6,F,Cl,Br,I])c([#1,#6,F,Cl,Br,I])c([#1,#6,F,Cl,Br,I])c2([#1,#6,F,Cl,Br,I]))[CX4][CX4]1",
+                "N-Substituted-4-arylpiperidin-4-ol" :"[NX3]1([CX4!R])[CX4][CX4][CX4]([OH1])(c2c([#1,#6,F,Cl,Br,I])c([#1,#6,F,Cl,Br,I])c([#1,#6,F,Cl,Br,I])c([#1,#6,F,Cl,Br,I])c2([#1,#6,F,Cl,Br,I]))[CX4][CX4]1",
+                "Formamides" :"[CX3H1](=[OX1])[NX3H1][#6]",
+                "Hydantoins (glycolylurea)" :"[NX3H1]1[CX3](=[OX1])[CX4]([#1,#6])([#1,#6])[NX3H1][CX3]1(=[OX1])",
+                "Thioamides" :"[#1,#6][CX3](=[SX1])[NX3]([#1,#6])[#1,#6]",
+                "Thioureas" : "[#1,#6][NX3]([#1,#6])[CX3](=[SX1])[#7]",
+                "Sulfonylureas" : "[#6][Sv6X4](=[OX1])(=[OX1])[NX3H1][CX3](=[OX1])[NX3H1][#6]",
+                "Thiols" : "[SX2!H0][#1,#6&!$([CX3]([SH1])=[OX1,SX1,NX2])]",
+                "Disulfides" : "[#6,#1][SX2][SX2][#6,#1]",
+                "parahydroquinones" : "[$(c1([OH1])c([OH1])cccc1),$(c1([OH1])ccc([OH1])cc1)]",
+                "paraquinones" : "[$([#6]1(=[OX1])-,:[#6]=,:[#6]-,:[#6](=[OX1])-,:[#6]=,:[#6]1),$([#6]1(=[OX1])-,:[#6](=[OX1])-,:[#6]=,:[#6]-,:[#6]=,:[#6]1)]",
+                "paraalkylphenols" : "[$(c1([OH1])c([CX4]([#1,#6])[#1,#6])cccc1),$(c1([OH1])ccc([CX4]([#1,#6])[#1,#6])cc1)]",
+                "Quinone methide" : "[$([OX1]=[#6X3]1-,:[#6X3]=,:[#6X3]-,:[#6X3]=,:[#6X3]-,:[#6X3]1=[CX3]([#1,#6])[#1,#6]),$([OX1]=[#6]1-,:[#6]=,:[#6]-,:[#6](=[CX3]([#1,#6])[#1,#6])-,:[#6]=,:[#6]1)]",
+                "Benzo-dioxolanes" : "c1ccc([OX2]2)c([OX2][CX4H1]2[OH1])c1",
+                "3-Methylene indoles" : "c1ccc([nX3]2([#1,#6]))c(c([CH2][#1,#6])c2)c1",
+                "Furans" : "c1ccc[oX2]1",
+                "Thiophenes" : "c1ccc[sX2]1",
+                "Thiazoles" : "[$(c1([#1,CX4!R])c([#1,CX4!R])[nX2]c([#1,CX4!R])[sX2]1),$(c1([#1,CX4!R])c([#1,CX4!R])[nX2]c([NX3]([#1,CX4!R])[#1,CX4!R])[sX2]1)]",
+                "Thiazolidinediones" : "[SX2]1[CX3](=[OX1])[NX3H1][CX3](=[OX1])[CX4]1[#6]",
+                #"Arenes" : "NOT [!#6!#1] AND c1ccccc1",
+                #"Bromoarenes" : "NOT [!#6!#1!Br] AND c1ccccc1Br",
+                "4-Halopyridines" : "[$(n1c([Cl,Br,I,F])cccc1),$(n1cccc([Cl,Br,I,F])cc1)]",
+                "Heterocycles " : "nc[$([OX2][Sv6X4](=[OX1])(=[OX1])[OH]),$([OX2][Sv6X4](=[OX1])(=[OX1])[OX2][CH3]),$([OX2][Sv6X4](=[OX1])(=[OX1])[CH3]),$([OX2][Sv6X4](=[OX1])(=[OX1])[CF3]),$([OX2][Sv6X4](=[OX1])(=[OX1])c1ccc([CH3])cc1),$([I,Br,Cl])]",
+                "Alkynes" : "[#6][CX2]#[CX2][#1,#6]",
+                "Michael acceptors" : "[$([CX3]=[CX3][$([$([NX3](=[OX1])=[OX1]),$([NX3+](=[OX1])[O-])]),$([CX3](=[OX1])[OX2][#1,#6]),$([Sv6X4](=[OX1])(=[OX1])[OH]),$([CX3](=[OX1])[#1,F,Cl,Br,I]),$([CX2]#[NX1]),$([CX4]([F,Cl])([F,Cl])[F,Cl]),$([CH2][OH]),$([CH2][$([NX3](=[OX1])=[OX1]),$([NX3+](=[OX1])[O-])]),$([CH2][F,Cl])]),$([CX3]=[CX3][CX3](=[OX1])[#1,#6])]",
+                "Alkylhalides" : "[$([CX4]([F,Cl,Br,I])([H,!F!Cl!Br!I])([H,!F!Cl!Br!I])[H,!F!Cl!Br!I]),$([CX4]([#6])([F,Cl,Br,I])([F,Cl,Br,I])[H,!F!Cl!Br!I])]",
+                "Carboxylic acids" : "[#6][CX3](=[OX1])[OH1]",
+                "Fluoroethyl ethers and amines" : "[$([F][CX4][$([CH2]),$([CH]),$(C[OH1])][OX2][#1,#6]),$([F][CX4][$([CH2]),$([CH]),$(C[OH1])][NX3][#6])]"
+                }
+
+
+def get_mechanism_flags(mol):
+    return {name: int(mol.HasSubstructMatch(Chem.MolFromSmarts(smarts))) for name, smarts in TOXIC_SMARTS.items()}
+
+df = pd.read_csv('./dataset/raw/'+"clintox_red"+'.csv')
+compound_iso_smiles = np.array(df['smiles']) 
+
+total_count = 0
+max_count = 0
+
+for s in compound_iso_smiles:
+    mol = Chem.MolFromSmiles(s)
+    flags = get_mechanism_flags(mol)
+    total_count += sum(flags.values())
+    max_count = max(max_count, sum(flags.values()))
+
+print(total_count, max_count)
