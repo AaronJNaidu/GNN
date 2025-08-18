@@ -1,0 +1,16 @@
+name: chem-ml-env
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10  # or 3.9 if you run into version issues
+  - numpy
+  - pandas
+  - scikit-learn
+  - matplotlib
+  - rdkit
+  - mordred
+  - xgboost
+  - pip
+  - pip:
+      - hyperopt
