@@ -1,4 +1,4 @@
-This project contains the Python code needed my dissertation: "Graph Neural Networks in Molecular Property prediction"
+This project contains the Python code needed for my dissertation: "Graph Neural Networks in Molecular Property prediction"
 
 The code for section 4.2 is found in the NonGNN folder - run the non_gnn_clintox.py and non_gnn_esol.py files.
 
