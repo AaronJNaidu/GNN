@@ -17,23 +17,22 @@ def get_molecule_features(mol):
     Returns:
         Dictionary with aggregated atom and bond features.
     """
-    # --- Atom Features ---
+    # Atom Features
     atom_features = []
     for atom in mol.GetAtoms():
         atom_feat = [
-            atom.GetAtomicNum(),           # Atomic number
-            int(atom.GetChiralTag() != rdchem.CHI_UNSPECIFIED),  # Chirality (binary)
-            atom.GetDegree(),              # Degree
-            atom.GetFormalCharge(),       # Formal charge
-            atom.GetTotalNumHs(),          # Number of hydrogens
-            atom.GetNumRadicalElectrons(), # Radical electrons
-            int(atom.GetHybridization()),  # Hybridization (as integer)
-            int(atom.GetIsAromatic()),     # Is aromatic (binary)
-            int(atom.IsInRing()),          # Is in ring (binary)
+            atom.GetAtomicNum(),           
+            int(atom.GetChiralTag() != rdchem.CHI_UNSPECIFIED),  
+            atom.GetDegree(),            
+            atom.GetFormalCharge(),       
+            atom.GetTotalNumHs(),          
+            atom.GetNumRadicalElectrons(), 
+            int(atom.GetHybridization()),  
+            int(atom.GetIsAromatic()),    
+            int(atom.IsInRing()),          
         ]
         atom_features.append(atom_feat)
     
-    # Aggregate atom features
     atom_features = np.array(atom_features)
     atom_stats = {
         'atom_mean': np.mean(atom_features, axis=0),
@@ -42,15 +41,15 @@ def get_molecule_features(mol):
         'atom_min': np.min(atom_features, axis=0),
     }
 
-    # --- Bond Features ---
+    # Bond Features
     if mol.GetNumBonds() > 0:
         bond_features = []
         for bond in mol.GetBonds():
             bond_feat = [
-                int(bond.GetBondType()),    # Bond type (1=SINGLE, 2=DOUBLE, etc.)
-                int(bond.IsInRing()),       # Is in ring (binary)
-                int(bond.GetIsConjugated()),# Is conjugated (binary)
-                int(bond.GetStereo() != rdchem.BondStereo.STEREONONE),  # Stereochemistry (binary)
+                int(bond.GetBondType()),    
+                int(bond.IsInRing()),       
+                int(bond.GetIsConjugated()),
+                int(bond.GetStereo() != rdchem.BondStereo.STEREONONE),  
             ]
             bond_features.append(bond_feat)
         
@@ -62,7 +61,6 @@ def get_molecule_features(mol):
             'bond_min': np.min(bond_features, axis=0),
         }
     else:
-        # Handle molecules with no bonds (e.g., single-atom)
         bond_stats = {
             'bond_mean': np.zeros(4),
             'bond_sum': np.zeros(4),
@@ -78,19 +76,18 @@ def get_gnn_atom_features(mol):
     
     for atom in mol.GetAtoms():
         atom_feat = [
-            atom.GetAtomicNum(),           # Atomic number
-            int(atom.GetChiralTag() != rdchem.CHI_UNSPECIFIED),  # Chirality (binary)
-            atom.GetDegree(),             # Degree
-            atom.GetFormalCharge(),       # Formal charge
-            atom.GetTotalNumHs(),         # Number of hydrogens
-            atom.GetNumRadicalElectrons(),# Radical electrons
-            int(atom.GetHybridization()), # Hybridization (as integer)
-            int(atom.GetIsAromatic()),    # Is aromatic (binary)
-            int(atom.IsInRing()),         # Is in ring (binary)
+            atom.GetAtomicNum(),          
+            int(atom.GetChiralTag() != rdchem.CHI_UNSPECIFIED), 
+            atom.GetDegree(),            
+            atom.GetFormalCharge(),       
+            atom.GetTotalNumHs(),         
+            atom.GetNumRadicalElectrons(),
+            int(atom.GetHybridization()), 
+            int(atom.GetIsAromatic()),    
+            int(atom.IsInRing()),         
         ]
         features.append(atom_feat)
 
-    # Convert to numpy array (num_atoms x 9)
     features = np.array(features)
     
     return {
@@ -116,7 +113,7 @@ def molecule_to_features(smiles_list):
         ]))
     return feat_matrix
 
-# ==== Model Training ====
+# Model Training
 def train_and_evaluate(model, X_train, y_train, X_val, y_val, X_test, y_test):
     model.fit(X_train, y_train)
     y_pred_val = model.predict(X_val)
@@ -126,7 +123,7 @@ def train_and_evaluate(model, X_train, y_train, X_val, y_val, X_test, y_test):
     test_r2 = r2_score(y_test, y_pred_test)
     return val_rmse, test_rmse, test_r2
 
-# ==== Hyperparameter Optimization ====
+# Hyperparameter Optimization
 def run_fold(model_type, params, fold_data):
     train_idx = fold_data["train_idx"]
     val_idx = fold_data["val_idx"]
@@ -194,7 +191,6 @@ model_name = ""
 
 if __name__ == '__main__':
 
-    # Load ESOL dataset
     dataset = pd.read_csv('esol.csv')
     smiles_list = dataset['smiles']
     y = dataset['ESOL predicted log solubility in mols per litre']
@@ -206,7 +202,6 @@ if __name__ == '__main__':
 
     folds = load_split('esol_split_5fold.json')
 
-    # Compute features
     X = pd.DataFrame(molecule_to_features(smiles_list))
     print(X.head())
 
@@ -243,4 +238,5 @@ if __name__ == '__main__':
         print("Values:", [f"{rmse:.4f}" for rmse in best_trial['test_rmses']])
         print(f"Mean: {np.mean(best_trial['test_rmses']):.4f}")
         print(f"Std dev: {np.std(best_trial['test_rmses']):.4f}")
+
 
