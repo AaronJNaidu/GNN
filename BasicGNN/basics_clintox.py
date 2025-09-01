@@ -166,7 +166,6 @@ def train_and_evaluate(model_name, model, optimizer, train_loader, val_loader, t
 
     return best_val_loss, val_roc_auc, test_roc_auc
 
-# Update run_fold to use output_dim
 def run_fold(model_name, in_dim, hidden_dim, num_layers, lr, weight_decay, fold_data, output_dim):
     train_idx = fold_data["train_idx"]
     val_idx = fold_data["val_idx"]
