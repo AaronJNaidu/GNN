@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 from xgboost import XGBClassifier
 
 def get_molecule_features(mol):
-    # --- Atom Features ---
+    # Atom Features
     atom_features = []
     for atom in mol.GetAtoms():
         atom_feat = [
@@ -37,7 +37,7 @@ def get_molecule_features(mol):
         'atom_min': np.min(atom_features, axis=0),
     }
 
-    # --- Bond Features ---
+    # Bond Features
     if mol.GetNumBonds() > 0:
         bond_features = []
         for bond in mol.GetBonds():
@@ -270,5 +270,6 @@ if __name__ == '__main__':
         print("Values:", [f"{rmse:.4f}" for rmse in best_trial['test_aucs']])
         print(f"Mean: {np.mean(best_trial['test_aucs']):.4f}")
         print(f"Std dev: {np.std(best_trial['test_aucs']):.4f}")
+
 
 
