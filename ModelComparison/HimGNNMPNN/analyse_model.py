@@ -58,7 +58,7 @@ def visualize_mol_with_annotations_contribution(smiles, scores, prediction=None,
 
     # Normalize scores to [0,1]
     norm = mcolors.Normalize(vmin=-1.0, vmax=1.0)
-    cmap = cm.get_cmap("viridis")  # or "cool", "plasma", etc.
+    cmap = cm.get_cmap("viridis")  
     norm_scores = 2 * (scores - scores.min()) / (scores.max() - scores.min() + 1e-9) - 1
     atom_colors = {i: cmap(norm(float(score))) for i, score in enumerate(norm_scores)}
 
@@ -116,7 +116,7 @@ def visualize_mol_with_annotations(smiles, scores, prediction=None, actual=None,
 
     # Normalize scores to [0,1]
     norm = mcolors.Normalize(vmin=0.0, vmax=1.0)
-    cmap = cm.get_cmap("cool")  # or "viridis", "plasma", etc.
+    cmap = cm.get_cmap("cool")  
     norm_scores = (scores - scores.min()) / (scores.max() - scores.min() + 1e-5)
     atom_colors = {i: cmap(norm(float(score))) for i, score in enumerate(norm_scores)}
 
@@ -140,8 +140,6 @@ def visualize_mol_with_annotations(smiles, scores, prediction=None, actual=None,
 
     highlight_atoms = list(atom_colors.keys())
     highlight_colors = atom_colors.copy()
-    #for idx in fg_atoms:
-    #    highlight_colors[idx] = (1.0, 1.0, 0.0)  # Yellow for functional groups
 
     Draw.rdMolDraw2D.PrepareAndDrawMolecule(drawer, mol,
                                             highlightAtoms=highlight_atoms,
@@ -186,14 +184,13 @@ def get_molecule_name(smiles):
     mol = Chem.MolFromSmiles(smiles)
     if mol is None:
         return "Unknown Molecule"
-    return Chem.MolToSmiles(mol)  # or fallback to canonical SMILES
+    return Chem.MolToSmiles(mol)  
 
 def compute_integrated_gradients(model, g, target_idx=0, baseline=None, steps=50):
     model.eval()
     device = next(model.parameters()).device
     g = g.to(device)
 
-    # Extract the node features for 'atom' nodes
     input_x = g.nodes['atom'].data['feat'].detach()
 
     if baseline is None:
@@ -201,7 +198,6 @@ def compute_integrated_gradients(model, g, target_idx=0, baseline=None, steps=50
 
     integrated_grads = torch.zeros_like(input_x).to(device)
 
-    # You also need to extract all other features your model requires
     bf = g.edges[('atom', 'interacts', 'atom')].data['feat']
     fnf = g.nodes['func_group'].data['feat']
     fef = g.edges[('func_group', 'interacts', 'func_group')].data['feat']
@@ -211,13 +207,10 @@ def compute_integrated_gradients(model, g, target_idx=0, baseline=None, steps=50
         interpolated_x = (baseline + alpha * (input_x - baseline)).detach()
         interpolated_x.requires_grad_(True)
 
-        # Temporarily replace atom features in graph with interpolated_x
         g.nodes['atom'].data['feat'] = interpolated_x
 
-        # Forward pass: pass all required features explicitly
-        atom_pred, fg_pred = model(g, interpolated_x, bf, fnf, fef, molf, None)  # assuming labels=None for IG
+        atom_pred, fg_pred = model(g, interpolated_x, bf, fnf, fef, molf, None)  
 
-        # Combine outputs as in your training code
         output = (torch.sigmoid(atom_pred) + torch.sigmoid(fg_pred)) / 2
         squeezed_output = output.squeeze()
 
@@ -236,14 +229,12 @@ def compute_integrated_gradients(model, g, target_idx=0, baseline=None, steps=50
 
         integrated_grads += grads
 
-        # Clear gradients for next iteration
         interpolated_x.grad.zero_()
 
     avg_grads = integrated_grads / steps
     attributions = (input_x - baseline) * avg_grads
 
-    #print("attributions shape:", attributions.shape)  # should be [num_atoms, num_features]
-    node_attributions = attributions.sum(dim=1)       # sum over features to get attribution per atom
+    node_attributions = attributions.sum(dim=1)       
     return node_attributions.cpu()
 
 
@@ -251,24 +242,18 @@ class HGNNWrapper(nn.Module):
     def __init__(self, model, bf, fnf, fef, mf):
         super(HGNNWrapper, self).__init__()
         self.model = model
-        # Store fixed features (bond features, full node features, etc.)
         self.bf = bf
         self.fnf = fnf
         self.fef = fef
         self.mf = mf
 
     def forward(self, *args, **kwargs):
-        # g: DGLGraph
-        # af: node feature tensor from explainer (shape: [num_nodes, feat_dim])
-        # Combine node features from explainer with stored other features
-        # Your original model expects (g, af, bf, fnf, fef, mf)
         g = kwargs.get('graph', None)
         af = kwargs.get('feat', None)
 
         if g is None or af is None:
             raise ValueError("HGNNWrapper.forward expects 'graph' and 'feat' keyword arguments")
 
-        # Make sure stored features are on the same device as af
         device = af.device
         bf = self.bf.to(device)
         fnf = self.fnf.to(device)
@@ -276,8 +261,6 @@ class HGNNWrapper(nn.Module):
         mf = self.mf.to(device)
 
         atom_output, motif_output = self.model(g, af, bf, fnf, fef, mf, labels=None)
-        # Return outputs as tuple (matching your model output)
-        #return atom_output, motif_output
         combined = (torch.sigmoid(atom_output) + torch.sigmoid(motif_output)) / 2
         return combined  # shape [1, num_classes]
     
@@ -286,9 +269,7 @@ from rdkit.Chem import Draw
 import numpy as np
 
 def explain_and_visualize_rdkit(model, g, af, bf, fnf, fef, mf, smiles, device="cpu", pred="",label="", return_masks = False):
-    # Move data to device
     g = g.to(device)
-    #print(g.etypes)
     af, bf, fnf, fef, mf = af.to(device), bf.to(device), fnf.to(device), fef.to(device), mf.to(device)
 
     # Wrap HGNN
@@ -303,7 +284,6 @@ def explain_and_visualize_rdkit(model, g, af, bf, fnf, fef, mf, smiles, device="
         num_epochs=200
     )
 
-    #feat_tuple = (af, bf, fnf, fef, mf)
     node_features = af
     node_feat_mask, edge_mask = explainer.explain_graph(g, node_features)
 
@@ -374,21 +354,16 @@ import io
 def save_with_colorbar(png_bytes, node_mask, edge_mask, save_path, smiles, pred_value, actual_value):
     fig, ax = plt.subplots(figsize=(6,6))
 
-    # Show molecule image
     image = Image.open(BytesIO(png_bytes))
     ax.imshow(image)
     ax.axis('off')
 
-    # Add heading at top
     plt.text(0.5, 1.12, "GNN Explainer", transform=ax.transAxes, ha='center', va='bottom', fontsize=14, fontweight='bold')
 
-    # Truncate SMILES to first 30 chars + '...' if longer
     short_smiles = smiles if len(smiles) <= 30 else smiles[:30] + "..."
 
-    # Add SMILES below the heading, centered
     plt.text(0.5, 1.05, f"SMILES: {short_smiles}", transform=ax.transAxes, ha='center', va='bottom', fontsize=10)
 
-    # Add colorbar on the right
     norm = mcolors.Normalize(vmin=0, vmax=1)
     cmap = plt.cm.bwr
     sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
@@ -396,7 +371,6 @@ def save_with_colorbar(png_bytes, node_mask, edge_mask, save_path, smiles, pred_
     cbar = plt.colorbar(sm, ax=ax, fraction=0.046, pad=0.04)
     cbar.set_label('Importance (low → high)')
 
-    # Add predicted and actual values below the image
     plt.text(0.5, -0.05, f"Predicted: {pred_value:.3f}   Actual: {actual_value:.3f}",
              transform=ax.transAxes, ha='center', va='top', fontsize=10)
 
@@ -548,11 +522,6 @@ if __name__ == '__main__':
         
     dist_loss=torch.nn.MSELoss(reduction='none')
 
-    #val_gs = dgl.batch(val_gs).to(args.device)
-    #val_labels=val_ls.to(args.device)
-
-    #test_gs=dgl.batch(test_gs).to(args.device)
-    #test_labels=test_ls.to(args.device)
 
     model = HGNN(2,
                     args,
@@ -567,30 +536,25 @@ if __name__ == '__main__':
 
     from pathlib import Path
 
-    # Directory to save visualizations
     save_dir = Path("visualizations_explainer_0815")
     save_dir.mkdir(exist_ok=True)
 
     explainer = GNNExplainer(
     model,
-    num_hops=3,          # should match your message-passing depth
+    num_hops=3,          
     lr=0.01,
     num_epochs=200
 )
 
-    #print(len(test_gs))
     results_list = []
-    # Loop through a few test molecules
     for i, g in enumerate(test_gs):
-        smiles = g.smiles  # make sure your dataset graphs store SMILES here
-        #print(f"Label tensor shape at index {i}: {test_ls[i].shape}")
-        #print(test_ls[i])
+        smiles = g.smiles 
         print(i)
         label = test_ls[i][1].item()
         mol = Chem.MolFromSmiles(smiles)
         atom_symbols = [a.GetSymbol() for a in mol.GetAtoms()]
 
-        # === 1. Forward pass ===
+        # Forward pass
         with torch.no_grad():
             af = g.nodes['atom'].data['feat']
             bf = g.edges[('atom', 'interacts', 'atom')].data['feat']
@@ -602,17 +566,13 @@ if __name__ == '__main__':
             test_logits=(torch.sigmoid(atom_output)+torch.sigmoid(motif_output))/2
             test_logits = test_logits.squeeze()
             prob_1 = test_logits[1]/(test_logits[0] + test_logits[1])
-            #print(prob_1)
             pred = prob_1.squeeze().item()
 
-        # === 2. Get atom-level scores ===
-        # Option A: Use integrated gradients
+        # Get atom-level scores
         ig_scores = compute_integrated_gradients(model, g, target_idx=0, steps=50)
         ig_scores = 2 * (ig_scores - ig_scores.min()) / (ig_scores.max() - ig_scores.min() + 1e-9) - 1
-        # Option B: If your model outputs attention weights directly:
-        # scores = g.ndata["attention_weights"].cpu().numpy()
 
-        # === 3. Visualization ===
+        # Visualization
         '''
         img_bytes = visualize_mol_with_annotations_contribution(
             smiles, scores,
@@ -628,11 +588,11 @@ if __name__ == '__main__':
         results_list.append((smiles, pred, label))
 
         '''
-        # === 3. GNNExplainer ===
+        # GNNExplainer
         node_mask, svg_output = explain_and_visualize_rdkit(
             model,
             g, af, bf, fnf, fef, mf,
-            smiles=smiles,  # example SMILES
+            smiles=smiles,  
             device= args.device,
             pred=pred, label=label,
             return_masks = True
@@ -651,7 +611,6 @@ if __name__ == '__main__':
                 "ExplainerImportance": expl_val
             })
 
-    #print(f"Saved visualizations to {save_dir}")
     '''
     filename = "clintox_orig_preds.csv"
     file_exists = os.path.isfile(filename)
@@ -667,4 +626,5 @@ if __name__ == '__main__':
     with open("atom_importances_new.csv", "w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=results_list[0].keys())
         writer.writeheader()
+
         writer.writerows(results_list)
