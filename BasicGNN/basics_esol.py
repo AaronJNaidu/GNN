@@ -34,11 +34,9 @@ def build_model(model_name, in_dim, hidden_dim, num_layers, output_dim = 1):
         convs = [GCNConv(in_dim if i == 0 else hidden_dim, hidden_dim) for i in range(num_layers)]
     elif model_name == 'GAT':
         convs = []
-        heads = 4  # Number of attention heads
+        heads = 4  
         for i in range(num_layers):
-            # First layer input dimension handling
             in_channels = in_dim if i == 0 else hidden_dim * heads
-            # Last layer should use average instead of concatenation
             if i == num_layers - 1:
                 convs.append(GATConv(in_channels, hidden_dim, heads=1, concat=False))
             else:
@@ -237,7 +235,6 @@ def load_split(json_path):
     return split
 
 folds = load_split('esol_split_5fold.json')
-#print("folds length", len(folds))
 
 for m in ['AttentiveFP', 'GCN', 'GAT', 'GraphSAGE', 'GIN']:
     model_name = m
@@ -248,7 +245,7 @@ for m in ['AttentiveFP', 'GCN', 'GAT', 'GraphSAGE', 'GIN']:
         fn=objective,
         space=search_space,
         algo=tpe.suggest,
-        max_evals=30,  # adjust as needed
+        max_evals=30, 
         trials=trials
     )
 
@@ -294,3 +291,4 @@ for m in ['AttentiveFP', 'GCN', 'GAT', 'GraphSAGE', 'GIN']:
         plot_filename = f"test_rmse_vs_hyperparams_{m}.png"
         plt.savefig(plot_filename, dpi=300, bbox_inches='tight')
         plt.close()
+
