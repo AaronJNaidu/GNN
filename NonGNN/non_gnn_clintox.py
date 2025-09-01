@@ -13,27 +13,22 @@ import matplotlib.pyplot as plt
 from xgboost import XGBClassifier
 
 def get_molecule_features(mol):
-    """Compute both atom-level and bond-level features for a molecule.
-    Returns:
-        Dictionary with aggregated atom and bond features.
-    """
     # --- Atom Features ---
     atom_features = []
     for atom in mol.GetAtoms():
         atom_feat = [
-            atom.GetAtomicNum(),           # Atomic number
-            int(atom.GetChiralTag() != rdchem.CHI_UNSPECIFIED),  # Chirality (binary)
-            atom.GetDegree(),              # Degree
-            atom.GetFormalCharge(),       # Formal charge
-            atom.GetTotalNumHs(),          # Number of hydrogens
-            atom.GetNumRadicalElectrons(), # Radical electrons
-            int(atom.GetHybridization()),  # Hybridization (as integer)
-            int(atom.GetIsAromatic()),     # Is aromatic (binary)
-            int(atom.IsInRing()),          # Is in ring (binary)
+            atom.GetAtomicNum(),           
+            int(atom.GetChiralTag() != rdchem.CHI_UNSPECIFIED), 
+            atom.GetDegree(),              
+            atom.GetFormalCharge(),       
+            atom.GetTotalNumHs(),          
+            atom.GetNumRadicalElectrons(), 
+            int(atom.GetHybridization()),  
+            int(atom.GetIsAromatic()),     
+            int(atom.IsInRing()),          
         ]
         atom_features.append(atom_feat)
     
-    # Aggregate atom features
     atom_features = np.array(atom_features)
     atom_stats = {
         'atom_mean': np.mean(atom_features, axis=0),
@@ -47,10 +42,10 @@ def get_molecule_features(mol):
         bond_features = []
         for bond in mol.GetBonds():
             bond_feat = [
-                int(bond.GetBondType()),    # Bond type (1=SINGLE, 2=DOUBLE, etc.)
-                int(bond.IsInRing()),       # Is in ring (binary)
-                int(bond.GetIsConjugated()),# Is conjugated (binary)
-                int(bond.GetStereo() != rdchem.BondStereo.STEREONONE),  # Stereochemistry (binary)
+                int(bond.GetBondType()),    
+                int(bond.IsInRing()),       
+                int(bond.GetIsConjugated()),
+                int(bond.GetStereo() != rdchem.BondStereo.STEREONONE), 
             ]
             bond_features.append(bond_feat)
         
@@ -62,7 +57,6 @@ def get_molecule_features(mol):
             'bond_min': np.min(bond_features, axis=0),
         }
     else:
-        # Handle molecules with no bonds (e.g., single-atom)
         bond_stats = {
             'bond_mean': np.zeros(4),
             'bond_sum': np.zeros(4),
@@ -73,24 +67,22 @@ def get_molecule_features(mol):
     return atom_stats, bond_stats
 
 def get_gnn_atom_features(mol):
-    """Convert atom features into molecule-level statistics"""
     features = []
     
     for atom in mol.GetAtoms():
         atom_feat = [
-            atom.GetAtomicNum(),           # Atomic number
-            int(atom.GetChiralTag() != rdchem.CHI_UNSPECIFIED),  # Chirality (binary)
-            atom.GetDegree(),             # Degree
-            atom.GetFormalCharge(),       # Formal charge
-            atom.GetTotalNumHs(),         # Number of hydrogens
-            atom.GetNumRadicalElectrons(),# Radical electrons
-            int(atom.GetHybridization()), # Hybridization (as integer)
-            int(atom.GetIsAromatic()),    # Is aromatic (binary)
-            int(atom.IsInRing()),         # Is in ring (binary)
+            atom.GetAtomicNum(),           
+            int(atom.GetChiralTag() != rdchem.CHI_UNSPECIFIED),  
+            atom.GetDegree(),             
+            atom.GetFormalCharge(),       
+            atom.GetTotalNumHs(),         
+            atom.GetNumRadicalElectrons(),
+            int(atom.GetHybridization()), 
+            int(atom.GetIsAromatic()),    
+            int(atom.IsInRing()),         
         ]
         features.append(atom_feat)
 
-    # Convert to numpy array (num_atoms x 9)
     features = np.array(features)
     
     return {
@@ -117,22 +109,6 @@ def molecule_to_features(smiles_list):
     return feat_matrix
 
 def filter_broken_smiles_and_remap_folds(smiles_list, labels, folds):
-    """
-    Removes invalid SMILES, filters labels and features accordingly,
-    and remaps the fold indices to match the new data.
-
-    Args:
-        smiles_list (List[str]): List of SMILES strings.
-        labels (List or Series): Corresponding target values.
-        folds (List[Dict]): List of dicts with 'train_idx', 'val_idx', 'test_idx'.
-
-    Returns:
-        Tuple:
-            - filtered_smiles: List[str] of valid SMILES
-            - filtered_labels: List of corresponding labels
-            - remapped_folds: List of folds with updated indices
-            - valid_idx: Original indices of valid SMILES
-    """
     valid_idx = []
     filtered_smiles = []
     filtered_labels = []
@@ -158,7 +134,7 @@ def filter_broken_smiles_and_remap_folds(smiles_list, labels, folds):
     return pd.Series(filtered_smiles), pd.Series(filtered_labels), remapped_folds
 
 
-# ==== Model Training ====
+# Model Training 
 def train_and_evaluate(model, X_train, y_train, X_val, y_val, X_test, y_test):
     model.fit(X_train, y_train)
 
@@ -176,7 +152,7 @@ def train_and_evaluate(model, X_train, y_train, X_val, y_val, X_test, y_test):
     
     return val_auc, test_auc
 
-# ==== Hyperparameter Optimization ====
+# Hyperparameter Optimization
 def run_fold(model_type, params, fold_data):
     train_idx = fold_data["train_idx"]
     val_idx = fold_data["val_idx"]
@@ -212,8 +188,6 @@ def run_fold(model_type, params, fold_data):
             probability=True
         )
 
-
-    # Train and evaluate
     val_auc, test_auc = train_and_evaluate(
         model, X_train, y_train, X_val, y_val, X_test, y_test
     )
@@ -244,8 +218,6 @@ def objective(params):
 model_name = ""
 
 if __name__ == '__main__':
-
-    # Load ESOL dataset
     dataset = pd.read_csv('clintox.csv')
     smiles_list = dataset['smiles']
     y = dataset['CT_TOX']
@@ -262,7 +234,6 @@ if __name__ == '__main__':
 
     smiles_list, y, folds = filter_broken_smiles_and_remap_folds(smiles_list, y, folds)
 
-    # Compute features
     X = pd.DataFrame(molecule_to_features(smiles_list))
     print(X.head())
 
@@ -299,4 +270,5 @@ if __name__ == '__main__':
         print("Values:", [f"{rmse:.4f}" for rmse in best_trial['test_aucs']])
         print(f"Mean: {np.mean(best_trial['test_aucs']):.4f}")
         print(f"Std dev: {np.std(best_trial['test_aucs']):.4f}")
+
 
